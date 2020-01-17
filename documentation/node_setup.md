@@ -22,7 +22,7 @@ The following document will only summarize the steps taken and highlight **(in b
 
         - Install `Adafruit VL53L0X` library by `Adafruit`
         - Install `MCCI LoRaWAN LMIC` library by `IBM, Mathis Koojiman, Terry Moore, ChaeHee Won, Frank Rose`
-        - Install if not available or **UPDATE** if existing the `ArduinoJson` library by `Benoint Blanchon`. It is important to have the latest version of the library, otherwise the CayenneLPP library will throw error
+        - Install (if not available) or **UPDATE** (if already existing) the `ArduinoJson` library by `Benoint Blanchon`. **It is important to have the latest version of the library, otherwise the CayenneLPP library will throw error**
         - Install `CayeneLPP` library 
         - `CayeneLPP` library can be modified `(WITH CAUTION)` if the following error appears in the compiler output of Arduino IDE:
 
