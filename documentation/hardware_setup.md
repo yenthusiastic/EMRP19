@@ -7,7 +7,7 @@ The following document will only summarize the steps taken and highlight **(in b
 #### 1. Prepare hardware
 - Required components:
     - Heltec WiFi_LoRa_32 ESP32-based module with 868MHz antenna (V1)
-    - [Adafruit VL6180X](https://www.adafruit.com/product/3316) Time-of-flight distance sensor breakout board
+    - [Adafruit VL53L0X](https://www.adafruit.com/product/3316) Time-of-flight distance sensor breakout board
 - Pin headers have to be soldered to both modules. 
 - Connect the antenna to the Heltec WiFi_LoRa_32 module before powering it with 5V over mciroUSB cable.
 
@@ -20,14 +20,24 @@ The following document will only summarize the steps taken and highlight **(in b
 
         ![heltec_lib](../media/heltec-lib.PNG)
 
-        - Install `Adafruit VL6180X` library by `Adafruit`
+        - Install `Adafruit VL53L0X` library by `Adafruit`
         - Install `MCCI LoRaWAN LMIC` library by `IBM, Mathis Koojiman, Terry Moore, ChaeHee Won, Frank Rose`
-        - `CayeneLPP` library **was not installed due to incompatibility** with V1 module
+        - Install if not available or **UPDATE** if existing the `ArduinoJson` library by `Benoint Blanchon`. It is important to have the latest version of the library, otherwise the CayenneLPP library will throw error
+        - Install `CayeneLPP` library 
+        - `CayeneLPP` library can be modified `(WITH CAUTION)` if the following error appears in the compiler output of Arduino IDE:
+
+            ![cayenne_lib_err](../media/cayenne_lib_error.png)
+
+            - The error lies in the usage of the ArduinoJson library which is called in the `decode()` function of CayenneLPP library. Since in this case we only need to encode but not decode the data for sending, we can work around this by deactivate this function in the CayenneLPP library by commenting out the highlight parts:
+
+            ![cayenne_lib_fix](../media/cayenne_lib_fix.png)
+
+            - After this the compiler should compile fine.
 
 #### 3. Hardware Connections
-- Although different hardware modules (Heltec WiFi_LoRa_ESP32 V1 & VL6180X) are used, the wiring between the 2 modules are the same, which is summarized in the following table:
+- The wiring between the Heltec WiFi_LoRa_ESP32 V1 board and the VL53L0X sensor is summarized in the following table:
 
-Heltec WiFi_LoRa_ESP32 V1 Pin | VL6180X Breakout board Pin 
+Heltec WiFi_LoRa_ESP32 V1 Pin | VL53L0X Breakout board Pin 
 ---------|----------
  3V3 | Vin 
  GND | GND 
@@ -42,7 +52,7 @@ The pin-out diagram of the Heltec WiFi_LoRa_ESP32 V1 is available [here](https:/
 - [Register a new device with OTAA Activation method](https://github.com/emrp/emrp2018_Moers_Trashbins/blob/master/documentation/from_sensor_to_ttn.md#43-registering-a-device)
 
 #### 5. Upload code to ESP32 module
-- Download the code from [here](code/heltec_vl6180_ttn/heltec_vl6180_ttn.ino).
+- Download the code from [here](code/heltec_vl53l0x_ttn/heltec_vl53l0x_ttn.ino).
 - [Edit the LMIC config file](https://github.com/emrp/emrp2018_Moers_Trashbins/blob/master/documentation/from_sensor_to_ttn.md#514-editing-the-lmic-config-file).
 - [Copy the device keys from TTN Console to the code.](https://github.com/emrp/emrp2018_Moers_Trashbins/blob/master/documentation/from_sensor_to_ttn.md#512-device-keys)
 - Under `Tools -> Board` choose **WiFi LoRa 32** from `Heltec ESP32 Arduino`
