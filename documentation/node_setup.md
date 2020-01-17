@@ -63,3 +63,7 @@ The pin-out diagram of the Heltec WiFi_LoRa_ESP32 V1 is available [here](https:/
 - Upload the code
 
 #### 6. Verify data received by TTN gateway
+
+- Check the TTN Console for received data
+
+![ttn-console](../media/ttn_console.png)
