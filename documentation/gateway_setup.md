@@ -17,4 +17,4 @@ The following modifications have to be made in the `ESP-sc-gway-h` header file f
 
 - (Line 261-265) fill in WiFi SSID for Gateway Manager 
 
-![mod2](../media/mod_2.png)
+![mod4](../media/mod_4.png)
