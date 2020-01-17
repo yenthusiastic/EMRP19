@@ -22,6 +22,8 @@
 #define BUILTIN_LED       25
 #define L0X_SHUTDOWN      GPIO_NUM_13
 #define TX_INTERVAL       1 // might become longer due to duty cycle limitations
+//#define SF                9
+const int SF=7;
 
 RTC_DATA_ATTR uint8_t BootCount = 0;
 static bool SleepIsEnabled = false;
@@ -30,7 +32,7 @@ Adafruit_VL53L0X lox; // time-of-flight infarred sensor
 CayenneLPP lpp(51);
 
 // payload to send to TTN gateway
-static uint8_t payload[3];
+// static uint8_t payload[3];
 
 // This EUI must be in little-endian format, so least-significant-byte
 // first. When copying an EUI from ttnctl output, this means to reverse
@@ -209,8 +211,8 @@ void do_send(osjob_t* j) {
     L0X_deinit();
     byte distLow = lowByte(distance);
     byte distHigh = highByte(distance);
-    payload[0] = distLow;
-    payload[1] = distHigh;
+    //payload[0] = distLow;
+    //payload[1] = distHigh;
 
     // Encode using CayenneLPP
     lpp.reset();
@@ -230,7 +232,7 @@ void do_send(osjob_t* j) {
 
 void setup() {
   Heltec.begin(true /*DisplayEnable Enable*/, true /*LoRa Enable*/, true /*Serial Enable*/, true, 866E6);
-  Heltec.LoRa.setSpreadingFactor(8);
+  Heltec.LoRa.setSpreadingFactor(7);
   
   Serial.println("=============================================");
   if (BootCount == 0)
@@ -265,7 +267,7 @@ void loop() {
   {
     Heltec.begin(true /*DisplayEnable Enable*/, true /*LoRa Enable*/, true /*Serial Enable*/, true, 866E6);
     Serial.println("Enabling sleep inside loop");
-    Heltec.LoRa.setSpreadingFactor(8);
+    Heltec.LoRa.setSpreadingFactor(7);
     
     SleepIsEnabled = true;
   }

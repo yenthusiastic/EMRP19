@@ -1,6 +1,8 @@
 ### Set up Single-channel LORAWAN gateway
 Code from [this repo](https://github.com/things4u/ESP-1ch-Gateway-v5.0), instructions from http://things4u.github.io/
 
+- Install latest version of the `ArduinoJson` Library by `Benoint Blanchon`.
+- Copy the [ESP-1ch-Gateway-v5.0 libraries folder](../code/ESP-1ch-Gateway-v5.0/libraries) to the Arduino libraries folder (should be under `Documents/Arduino/libraries`) 
 
 The following modifications have to be made in the `ESP-sc-gway-h` header file for the Heltech ESP32 WiFi LoRa (V1) Dev boards:
 - (Line 90) set `_PIN_OUT` to 4
