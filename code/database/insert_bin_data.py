@@ -12,11 +12,13 @@ csv_data = "paper_bins.csv"
 bin_type = 1 #bin type is 1 for "Papierkorb"
 
 # Database authentication
-psql_host='****'
-psql_port=9999
-psql_dbname='****'
-psql_user='****'
-psql_password='****'
+psql_host='db.dev.iota.pw'
+psql_port=6000
+psql_dbname='em_wastebin'
+psql_user='arp_b'
+psql_password='iota999'
+
+type_id = 1 #type id 1 for Papierkorb
 
 # Initialize database connection
 try:        
@@ -36,8 +38,8 @@ with open(csv_data, newline='') as csv_file:
             lat = row[1]
             lon = row[2]
             cursor = psql_conn.cursor()
-            postgres_insert_query = """ INSERT INTO public."bin" (bin_id, longitude, latitude) VALUES (%s,%s,%s) RETURNING "bin_id" """
-            record_to_insert = (bin_id, lon, lat)
+            postgres_insert_query = """ INSERT INTO public."bin" (bin_id, type_id, longitude, latitude) VALUES (%s,%s,%s,%s) RETURNING "bin_id" """
+            record_to_insert = (bin_id, type_id, lon, lat)
             cursor.execute(postgres_insert_query, record_to_insert)
             fetched_bin_id = cursor.fetchone()[0]
             psql_conn.commit()

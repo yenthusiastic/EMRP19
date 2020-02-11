@@ -5,7 +5,7 @@ TTN MQTT API Reference: https://www.thethingsnetwork.org/docs/applications/mqtt/
 Original version: https://github.com/emrp/emrp2018_Moers_Trashbins/blob/master/code/DatabaseScripts/mqtt_connect.py
 Modified by Thu Nguyen 14.01.2020
 """ 
-# iMport required libraries
+# Import required libraries
 ## Paho Library for MQTT communication
 import paho.mqtt.client as mqtt
 ## Json library to handle jason file from ttn
