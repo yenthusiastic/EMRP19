@@ -536,8 +536,6 @@ void setup() {
 
 
 
-
-
   // Disable link check validation
   LMIC_setLinkCheckMode(0);
 
