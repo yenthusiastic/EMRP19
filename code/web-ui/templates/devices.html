@@ -1,0 +1,227 @@
+<link href="/static/css/bootstrap-table.min.css" rel="stylesheet">
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Device Manager</h1>
+    <p class="mb-4">Here it is possible to add new devices to the system, change
+        the device details or remove devices from the system.</p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Devices</h6>
+        </div>
+        <div class="card-body">
+            <div id="toolbar">
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#edit" onclick="updateEditForm()"><span class="fa fa-plus"></span>Add New Device</button>
+            </div>
+            <table id="bst_table" class="table-striped table-hover
+                table-borderless"
+                data-search="true"
+                data-pagination="true"
+                data-show-extended-pagination="true"
+                data_toggle="table"
+                data-page-list="[5, 10, 20, 50, all]"
+                data-show-fullscreen="true"
+                data-show-columns="true"
+                data-show-columns-toggle-all="true"
+                data-buttons-class="info"
+                data-toolbar="#toolbar">
+
+                <thead>
+                    <tr>
+                        <th data-field="dev_id" data-sortable="true"
+                            data-halign="center" data-align="center">Device ID</th>
+                        <th data-field="ttn_id" data-sortable="true"
+                            data-halign="center">Device TTN ID</th>
+                        <th data-field="sensor" data-sortable="true">Attached Sensor</th>
+                        <th data-field="desc" data-sortable="true">Description</th>
+                        <!-- <th data-field="address" data-sortable="true">Address</th> -->
+                        <th data-field="actions">Actions</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal fade modal-primary" tabindex="-1" id="edit" name="edit_modal"
+        role="dialog" aria-labelledby="edit" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title custom_align" id="Heading">Edit Device
+                        Details</h4>
+                    <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true"><span class="fa fa-remove"
+                            aria-hidden="true"></span></button>
+                </div>
+                <form method="post" name="edit_form" action="/devices.html">
+                    <div class="modal-body">
+                        <div class="form-group" name="input_group" style="display: none;">
+                            <label>Device ID</label>
+                            <input class="form-control" name="selected_dev" type="text">
+                        </div>
+                        <div class="form-group">
+                            <label>Device TNN ID</label>
+                            <label class="form-control" type="text" name="ttn_id"></label>
+                            
+                        </div>
+                        <div class="form-group">
+                            <label>Attached Sensor</label>
+                            <select class="form-control" style="width:100%"
+                                name="sensor">
+                                <option id="opt_sensor_None">None</option>
+                                {% if all_sensors %}
+                                {% for sensor in all_sensors%}
+                                <option id="opt_sensor_{{sensor.name}}">{{sensor.name}}</option>
+                                {% endfor %}
+                                {%endif%}
+
+                            </select>
+
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <input class="form-control"type="text" name="desc"
+                                placeholder="Description">
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" name="btn" value="update_device"
+                            class="btn btn-success"><span class="fa fa-check"></span>Update
+                            Device</button>
+                        <button type="button" class="btn btn-danger"
+                            data-dismiss="modal"><span class="fa fa-remove"></span>
+                            Cancel</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal fade modal-primary" tabindex="-1" id="delete" role="dialog" aria-labelledby="delete" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title custom_align" id="Heading">Delete Device</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="fa fa-remove" aria-hidden="true"></span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger"><span class="fa fa-warning"></span>Are you sure you want to permanently delete this device?</div> 
+                </div>
+                <form method="post" action="/devices.html">
+                    <div class="modal-footer ">
+                        <input class="form-control" name="delete_dev" type="text" hidden>
+                        <button type="submit" name="btn" value="delete_device" class="btn btn-success" ><span class="fa fa-check"></span> Yes</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="fa fa-remove"></span> No</button>
+                    </div>
+                </form>
+            </div>
+          <!-- /.modal-content --> 
+        </div>
+            <!-- /.modal-dialog --> 
+    </div>
+</div>
+<!-- /.container-fluid -->
+
+<script src="/static/vendor/bootstrap/js/bootstrap-table.min.js"></script>
+<script>
+    var selected_id;  
+    var device_data = [];
+    $("#bst_table").on("click-row.bs.table", function (e, value, row, index) {
+        selected_row = row[0].innerText.split("\t");
+        document.getElementsByName("selected_dev")[0].value = selected_row[0];
+        document.getElementsByName("input_group")[0].style.display = "none";
+        document.getElementsByName("ttn_id")[0].outerHTML = '<label class="form-control" name="ttn_id" type="text">' + selected_row[1] + '</label>';
+        document.getElementById("opt_sensor_" + selected_row[2]).selected = true;
+        document.getElementsByName("desc")[0].value = selected_row[3];
+        document.getElementsByName("delete_dev")[0].value = selected_row[0];
+    });
+
+    function updateEditForm(){
+        document.getElementsByName("selected_dev")[0].value = "";
+        document.getElementsByName("input_group")[0].style.display = "block";
+        document.getElementsByName("ttn_id")[0].outerHTML = '<input class="form-control" name="ttn_id" type="text">';
+        document.getElementById("opt_sensor_None").selected = true;
+        document.getElementsByName("desc")[0].value = "";
+    }
+    $(document).ready(function() {
+        {%for dev in device_data%}
+            device_data.push({{dev|safe}});    
+        {%endfor%}
+        
+      
+        
+        $('#bst_table').bootstrapTable({
+            data: device_data,
+            pageSize: 10,
+            columns: [{
+                title: "Device ID",
+                sortable: true,
+            },
+            {
+                title: "Device TTN ID",
+                sortable: true
+            },
+            {
+                title: "Attached Sensor",
+                sortable: true
+            },
+            {
+                title: "Description",
+                sortable: true
+            },
+            {
+                title: "Actions",
+                formatter: actionFormatter
+            }
+            ]
+        })
+  
+    });
+  
+  
+    function actionFormatter(value, row, index) {
+        return [
+        '<button type="button" rel="tooltip" title="Edit Bin" data-toggle="modal" data-target="#edit" class="btn btn-primary" name="edit_btn" id="edit_btn">',
+        '<i class="fa fa-edit"></i></button>',
+        '<button type="submit" rel="tooltip" title="Delete Bin" data-toggle="modal" data-target="#delete" class="btn btn-danger" name="del_btn" id="del_btn">',
+        '<i class="fa fa-times"></i></button>'
+        ].join('')
+    };
+  
+    function statusFormatter(value, row){
+        status_item = "";
+        if (value == "NA"){
+            status_item += '<span class="badge badge-primary"> NA'
+        } else if (value== "25"){
+            status_item += '<span class="badge badge-success"> 25%'
+        } else if (value == "50"){
+            status_item += '<span class="badge badge-info"> 50%'
+        } else if (value == "75"){
+            status_item += '<span class="badge badge-warning"> 75%'
+        } else {
+            status_item += '<span class="badge badge-danger"> 100%'
+        }
+        status_item +='</span>'
+  
+        return status_item
+    };
+    function binFormatter(value, row){
+        status_item = "";
+        if (value == "Papierkorb"){
+            status_item += '<span class="badge badge-primary"> Papierkorb'
+        } else {
+            status_item += '<span class="badge badge-warning"> NA'
+        }
+        status_item +='</span>'
+  
+        return status_item
+    };
+
+  </script>

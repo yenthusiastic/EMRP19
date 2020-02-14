@@ -22,7 +22,7 @@
 // cycle limitations).
 const unsigned TX_INTERVAL = 60;
 // const unsigned TX_INTERVAL = 1; //OTAA
-#define DEVICE_ID         1
+#define DEVICE_ID         3
 
 
 RTC_DATA_ATTR uint8_t BootCount = 0;
@@ -38,15 +38,15 @@ CayenneLPP lpp(51);
 // LoRaWAN NwkSKey, network session key
 // This is the default Semtech key, which is used by the early prototype TTN
 // network.
-static const PROGMEM u1_t NWKSKEY[16] = { 0x29, 0xF3, 0xB8, 0xB1, 0x99, 0x91, 0x21, 0x36, 0x6F, 0x93, 0x6D, 0xC0, 0x08, 0x9F, 0xD4, 0xD7 }; //MSB dev4
+static const PROGMEM u1_t NWKSKEY[16] = { 0xD8, 0x29, 0x88, 0x10, 0xBC, 0x24, 0xA8, 0x82, 0xC1, 0x82, 0x8F, 0xA0, 0x7F, 0xF7, 0xE4, 0x24 }; //MSB dev3
 
 // LoRaWAN AppSKey, application session key
 // This is the default Semtech key, which is used by the early prototype TTN
 // network.
-static const u1_t PROGMEM APPSKEY[16] = { 0x1C, 0xF3, 0x47, 0xEE, 0x89, 0xD5, 0x57, 0x35, 0x63, 0x07, 0xB3, 0x5F, 0x57, 0xDA, 0x3E, 0xBB }; //MSB dev4
+static const u1_t PROGMEM APPSKEY[16] = { 0xF5, 0xBB, 0x84, 0x64, 0xA8, 0x92, 0xB3, 0x5A, 0x44, 0x4D, 0xD3, 0xFD, 0xE9, 0xF9, 0x8A, 0xEF }; //MSB dev3
 
 // LoRaWAN end-device address (DevAddr)
-static const u4_t DEVADDR = 0x260111EB; // <-- Change this address for every node!
+static const u4_t DEVADDR = 0x26011EA6; // <-- Change this address for every node!
 // dev2: 0x26011FA5
 // dev3: 0x26011EA6
 

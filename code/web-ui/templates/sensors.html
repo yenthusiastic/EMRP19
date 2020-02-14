@@ -1,0 +1,225 @@
+<link href="/static/css/bootstrap-table.min.css" rel="stylesheet">
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Sensor Manager</h1>
+    <p class="mb-4">Here it is possible to add new sensors to the system, change
+        the sensor details or remove sensors from the system.</p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Devices</h6>
+        </div>
+        <div class="card-body">
+            <div id="toolbar">
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#edit" onclick="updateEditForm()"><span class="fa fa-plus"></span>Add New Sensor</button>
+            </div>
+            <table id="bst_table" class="table-striped table-hover
+                table-borderless"
+                data-search="true"
+                data-pagination="true"
+                data-show-extended-pagination="true"
+                data_toggle="table"
+                data-page-list="[5, 10, 20, 50, all]"
+                data-show-fullscreen="true"
+                data-show-columns="true"
+                data-show-columns-toggle-all="true"
+                data-buttons-class="info"
+                data-toolbar="#toolbar">
+
+                <thead>
+                    <tr>
+                        <th data-field="sensor_id" data-sortable="true"
+                            data-halign="center" data-align="center">Sensor ID</th>
+                        <th data-field="name" data-sortable="true"
+                            data-halign="center" data-align="center">Sensor Name</th>
+                        <th data-field="meas_type" data-sortable="true"
+                            data-halign="center" data-align="center">Measurement Type</th>
+                            <th data-field="meas_unit" data-sortable="true"
+                            data-halign="center" data-align="center">Measurement Unit</th>
+                        <th data-field="desc" data-sortable="true">Description</th>
+                        <th data-field="actions">Actions</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal fade modal-primary" tabindex="-1" id="edit" name="edit_modal"
+        role="dialog" aria-labelledby="edit" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title custom_align" id="Heading">Edit Sensor
+                        Details</h4>
+                    <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true"><span class="fa fa-remove"
+                            aria-hidden="true"></span></button>
+                </div>
+                <form method="post" name="edit_form" action="/sensors.html">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Sensor ID</label>
+                            <label class="form-control" type="text" name="sensor_id"></label>
+                        </div>
+                        <div class="form-group">
+                            <label>Sensor name</label>
+                            <input class="form-control" type="text" name="name">                        
+                        </div>
+                        <div class="form-group">
+                            <label>Measurement Type</label>
+                            <input class="form-control"type="text" name="meas_type">
+                        </div>
+                        <div class="form-group">
+                            <label>Measurement Unit</label>
+                            <input class="form-control"type="text" name="meas_unit">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <input class="form-control"type="text" name="desc">
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" name="btn" value="update_sensor"
+                            class="btn btn-success"><span class="fa fa-check"></span>Update
+                            Sensor</button>
+                        <button type="button" class="btn btn-danger"
+                            data-dismiss="modal"><span class="fa fa-remove"></span>
+                            Cancel</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal fade modal-primary" tabindex="-1" id="delete" role="dialog" aria-labelledby="delete" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title custom_align" id="Heading">Delete Sensor</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="fa fa-remove" aria-hidden="true"></span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger"><span class="fa fa-warning"></span>Are you sure you want to permanently delete this sensor?</div> 
+                </div>
+                <form method="post" action="/sensors.html">
+                    <div class="modal-footer ">
+                        <input class="form-control" name="delete_sensor" type="text" hidden>
+                        <button type="submit" name="btn" value="delete_sensor" class="btn btn-success" ><span class="fa fa-check"></span> Yes</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="fa fa-remove"></span> No</button>
+                    </div>
+                </form>
+            </div>
+          <!-- /.modal-content --> 
+        </div>
+            <!-- /.modal-dialog --> 
+    </div>
+</div>
+<!-- /.container-fluid -->
+
+<script src="/static/vendor/bootstrap/js/bootstrap-table.min.js"></script>
+<script>
+    var selected_id;  
+    var sensor_data = [];
+    $("#bst_table").on("click-row.bs.table", function (e, value, row, index) {
+        selected_row = row[0].innerText.split("\t");
+        document.getElementsByName("name")[0].value = selected_row[1];
+        document.getElementsByName("sensor_id")[0].outerHTML = '<label class="form-control" name="sensor_id" type="text">' + selected_row[0] + '</label>';
+        document.getElementsByName("meas_type")[0].value = selected_row[2];
+        document.getElementsByName("meas_unit")[0].value = selected_row[3];
+        document.getElementsByName("desc")[0].value = selected_row[4];
+        document.getElementsByName("delete_sensor")[0].value = selected_row[0];
+    });
+
+    function updateEditForm(){
+        document.getElementsByName("name")[0].value = "";
+        document.getElementsByName("sensor_id")[0].outerHTML = '<input class="form-control" name="sensor_id" type="text">';
+        document.getElementsByName("meas_type")[0].value = "";
+        document.getElementsByName("meas_unit")[0].value = "";
+        document.getElementsByName("desc")[0].value = "";
+    }
+    $(document).ready(function() {
+        {%for sensor in sensor_data%}
+            sensor_data.push({{sensor|safe}});    
+        {%endfor%}
+        
+      
+        
+        $('#bst_table').bootstrapTable({
+            data: sensor_data,
+            pageSize: 10,
+            columns: [{
+                title: "Sensor ID",
+                sortable: true,
+            },
+            {
+                title: "Sensor Name",
+                sortable: true
+            },
+            {
+                title: "Measurement Type",
+                sortable: true
+            },
+            {
+                title: "Measurement Unit",
+                sortable: true
+            },
+            {
+                title: "Description",
+                sortable: true
+            },
+            {
+                title: "Actions",
+                formatter: actionFormatter
+            }
+            ]
+        })
+  
+    });
+  
+  
+    function actionFormatter(value, row, index) {
+        return [
+        '<button type="button" rel="tooltip" title="Edit Bin" data-toggle="modal" data-target="#edit" class="btn btn-primary" name="edit_btn" id="edit_btn">',
+        '<i class="fa fa-edit"></i></button>',
+        '<button type="submit" rel="tooltip" title="Delete Bin" data-toggle="modal" data-target="#delete" class="btn btn-danger" name="del_btn" id="del_btn">',
+        '<i class="fa fa-times"></i></button>'
+        ].join('')
+    };
+  
+    function statusFormatter(value, row){
+        status_item = "";
+        if (value == "NA"){
+            status_item += '<span class="badge badge-primary"> NA'
+        } else if (value== "25"){
+            status_item += '<span class="badge badge-success"> 25%'
+        } else if (value == "50"){
+            status_item += '<span class="badge badge-info"> 50%'
+        } else if (value == "75"){
+            status_item += '<span class="badge badge-warning"> 75%'
+        } else {
+            status_item += '<span class="badge badge-danger"> 100%'
+        }
+        status_item +='</span>'
+  
+        return status_item
+    };
+    function binFormatter(value, row){
+        status_item = "";
+        if (value == "Papierkorb"){
+            status_item += '<span class="badge badge-primary"> Papierkorb'
+        } else {
+            status_item += '<span class="badge badge-warning"> NA'
+        }
+        status_item +='</span>'
+  
+        return status_item
+    };
+
+  </script>

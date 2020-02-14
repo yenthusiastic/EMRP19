@@ -1,54 +1,263 @@
-        <!-- Begin Page Content -->
-        <div class="container-fluid">
+<style>
+  td.details-control {
+      cursor: pointer;
+  }
+  tr.shown td.details-control {
+      
+  }
+</style>
+<!-- Begin Page Content -->
+<div class="container-fluid">
 
-          <!-- Page Heading -->
-          <h1 class="h3 mb-2 text-gray-800">Tables</h1>
-          <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below. For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net">official DataTables documentation</a>.</p>
+<!-- Page Heading -->
+<h1 class="h3 mb-2 text-gray-800">Bin Manager</h1>
+<p class="mb-4">Here it is possible to add new bins to the system, change the bin details or remove bins from the system.</p>
 
-          <!-- DataTales Example -->
-          <div class="card shadow mb-4">
-            <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
-            </div>
-            <div class="card-body">
-              <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Position</th>
-                      <th>Office</th>
-                      <th>Age</th>
-                      <th>Start date</th>
-                      <th>Salary</th>
-                    </tr>
-                  </thead>
-                  <tfoot>
-                    <tr>
-                      <th>Name</th>
-                      <th>Position</th>
-                      <th>Office</th>
-                      <th>Age</th>
-                      <th>Start date</th>
-                      <th>Salary</th>
-                    </tr>
-                  </tfoot>
-                  <tbody>
-                    <tr>
-                      <td>Tiger Nixon</td>
-                      <td>System Architect</td>
-                      <td>Edinburgh</td>
-                      <td>61</td>
-                      <td>2011/04/25</td>
-                      <td>$320,800</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-        </div>
-        <!-- /.container-fluid -->
-
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">Bins</h6>
+  </div>
+  <div class="card-body">
+       <table id="bst_table" class="table-striped table-hover table-borderless"  
+                              data-search="true"
+                              data-pagination="true"
+                              data-show-extended-pagination="true"
+                              data_toggle="table"
+                              data-page-list="[5, 10, 20, 50, all]"
+                              data-show-fullscreen="true"
+                              data-show-columns="true"
+                              data-show-columns-toggle-all="true"
+                              data-buttons-class="info"
+                              data-toolbar="#toolbar">
+                          
+          <thead>
+              <tr>
+              <th data-field="id" data-sortable="true" data-halign="center" data-align="center">Bin ID</th>
+              <th data-field="type" data-sortable="true" data-halign="center">Bin Type</th>
+              <th data-field="fill_level" data-sortable="true">Fill Level</th>
+              <th data-field="device" data-sortable="true">Attached Device</th>
+              <th data-field="sensors" data-sortable="true">Attached Sensor</th>
+              <th data-field="addr" data-sortable="true">Address</th>
+              <th data-field="actions">Actions</th>
+              </tr>
+          </thead>
+      </table>
+      
+      
+      
+      
     
+    </div>
+  </div>
+
+</div>
+<!-- /.container-fluid -->
+
+<div class="modal fade modal-primary" tabindex="-1" id="edit" name="edit_modal" role="dialog" aria-labelledby="edit" aria-hidden="true">
+<div class="modal-dialog">
+<div class="modal-content">
+  <div class="modal-header">
+      <h4 class="modal-title custom_align" id="Heading">Edit Bin Details</h4>
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="fa fa-remove" aria-hidden="true"></span></button>
+  </div>
+  <form method="post" name="edit_form" onsubmit="return validateEditForm()">
+      <div class="modal-body">
+          <div class="form-group">
+              <label>Bin ID</label>
+              <input class="form-control" type="text" name="bin_id">
+          </div>
+          <div class="form-group">
+              <label>Bin Type</label>
+              <select class="form-control" name="bin_type">
+                  {% if all_bin_types %}
+                  {%for bin_type in all_bin_types%}
+                  <option id="opt_bin_{{bin_type.art}}">{{bin_type.art}}</option>
+                  {%endfor%}
+                  {%endif%}
+              </select>
+          </div>
+          <div class="form-group">
+              <label>Attached Device</label>
+              <select class="form-control" style="width:100%" name="device">
+                  {% if all_devices %}
+                  {% for device in all_devices%}
+                      <option id="opt_device_{{device.device_ttn_id}}">{{device.device_ttn_id}}</option>
+                  {% endfor %}
+                  {%endif%}
+              </select>
+              
+          </div>
+          <div class="form-group">
+              <label>Attached Sensor</label>
+              <select class="form-control" style="width:100%" name="sensor">
+                  {% if all_sensors %}
+                  {% for sensor in all_sensors%}
+                      <option id="opt_sensor_{{sensor.name}}">{{sensor.name}}</option>
+                  {% endfor %}
+                  {%endif%}
+              </select>
+              
+          </div>
+          <div class="form-group">  
+              <label>Location (Latitude, Longitude)</label>           
+              <input class="form-control " type="text" name="location" placeholder="Location (Latitude, Longitude)">
+          </div>
+          
+      </div>
+      <div class="modal-footer ">
+          <button type="submit" name="btn" value="update_hardware" class="btn btn-success" ><span class="fa fa-check"></span>Update Bin</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="fa fa-remove"></span> Cancel</button>
+      </div>
+  </form>
+</div>
+<!-- /.modal-content --> 
+</div>
+<!-- /.modal-dialog --> 
+</div>
+
+<!-- <script src="/static/vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="/static/vendor/datatables/dataTables.bootstrap4.min.js"></script> -->
+<script>
+var selected_id;
+function format ( d ) {
+// `d` is the original data object for the row
+return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+  '<tr>'+
+      '<td>Bin Type:</td>'+
+      '<td>'+d.sensor+'</td>'+
+  '</tr>'+
+  '<tr>'+
+      '<td>Name of attached device:</td>'+
+      '<td>'+d.device_id+'</td>'+
+  '</tr>'+
+  '</table>';
+}
+
+var bin_data = [
+  {%for bin in all_bins%}
+  {
+    "bin_id" : {{bin.bin_id}},
+    "bin_type": '{{bin.bin_type}}',
+    "fill_level": '{{bin.fill_level}}',
+    "device_name": '{{bin.device_name}}',
+    "address" : '{{bin.address}}',
+    "coordinates": [{%for coord in bin.coordinates%}coord,{%endfor%}],
+    "sensor": '{{bin.sensor}}'
+  }
+  {%endfor%}
+]
+
+$(document).ready(function() {
+//             var table = $('#dataTable').DataTable( {
+//                 paging: true,
+//                 searching: true,
+//                 ordering:  true
+//             } );
+  
+  $('#bst_table').bootstrapTable({
+      data: bin_data,
+      pageSize: 10,
+      columns: [{
+          title: "Bin ID",
+          sortable: true,
+          align: 'center',
+          halign: 'center',
+          valign: 'middle'
+      },
+      {
+          title: "Bin Type",
+          sortable: true,
+          formatter: binFormatter,
+          align: 'center',
+          halign: 'center',
+          valign: 'middle'
+      },
+      {
+          title: "Fill Level",
+          sortable: true,
+          formatter: statusFormatter,
+          align: 'center',
+          halign: 'center',
+          valign: 'middle'
+      },
+      {
+          title: "Attached Device",
+          align: 'center',
+          halign: 'center',
+          valign: 'middle'
+      },
+      {
+          title: "Attached Sensor",
+          align: 'center',
+          halign: 'center',
+          valign: 'middle'
+      },
+      {
+          title: "Address",
+          sortable: true
+      },
+      {
+          title: "Actions",
+          formatter: actionFormatter,
+          events: window.actionEvents
+      }
+      ]
+  })
+
+});
+
+
+function actionFormatter(value, row, index) {
+  return [
+    '<button type="button" rel="tooltip" title="Edit Bin" data-toggle="modal" data-target="#edit" class="btn btn-primary" name="edit_btn">',
+    '<i class="fa fa-edit"></i></button>',
+    '<button type="submit" rel="tooltip" title="Delete Bin" data-toggle="modal" data-target="#delete" class="btn btn-danger" name="del_btn">',
+    '<i class="fa fa-times"></i></button>'
+  ].join('')
+};
+
+function statusFormatter(value, row){
+      status_item = "";
+      if (value == "NA"){
+          status_item += '<span class="badge badge-info"> NA'
+      } else if (value== "25"){
+          status_item += '<span class="badge badge-success"> 25%'
+      } else if (value == "50"){
+          status_item += '<span class="badge badge-info"> 50%'
+      } else if (value == "75"){
+          status_item += '<span class="badge badge-warning"> 75%'
+      } else {
+          status_item += '<span class="badge badge-danger"> 100%'
+      }
+      status_item +='</span>'
+
+      return status_item
+  };
+function binFormatter(value, row){
+      status_item = "";
+      if (value == "Papierkorb"){
+          status_item += '<span class="badge badge-info"> Papierkorb'
+      } else {
+          status_item += '<span class="badge badge-warning"> NA'
+      }
+      status_item +='</span>'
+
+      return status_item
+  };
+
+window.actionEvents = {
+  'click .edit_btn': function (e, value, row, index) {
+      selected_id = row["id"];
+      document.getElementsByName("bin_id")[0].value = selected_id;
+      status = "{{bin_data[selected_id].fill_level}}";
+      document.getElementsByName("location")[0].value = "{{bin_data[selected_id].coordinates[0]}}, {{bin_data[selected_id].coordinates[1]}}";
+      document.getElementsByName("sensor")[0].textContent = "{{bin_data[selected_id].sensor}}";
+      document.getElementsByName("device")[0].textContent = "{{bin_data[selected_id].device_name}}"; 
+      document.getElementById("opt_bin_type" + bin_data[selected_id].bin_type).selected = true;
+  },
+  'click .del_btn': function (e, value, row, index) {
+      selected_id = row["id"];
+      document.getElementById("delete_hardware").value = "delete_hardware_" + selected_id;
+  }};
+</script>
