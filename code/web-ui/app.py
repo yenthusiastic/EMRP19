@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy 
+from geoalchemy2 import Geometry
 from datetime import datetime
 import os
 from flask_login import login_user, logout_user, current_user, login_required
@@ -9,6 +10,7 @@ from flask_login import LoginManager
 from flask_bcrypt     import Bcrypt
 from geopy.geocoders import Nominatim
 from influxdb import InfluxDBClient
+import psycopg2
 import json
 
 
@@ -27,24 +29,43 @@ bc = Bcrypt      (app) # flask-bcrypt
 lm = LoginManager(   ) # flask-loginmanager
 lm.init_app(app) # init the login manager
 
-# Database authentication
-## InfluxDB
-influx_host = "flux.dev.iota.pw"
-influx_port = "8086"
-influx_user = "admin"
-influx_password = "admin"
-influx_dbname = "em_wastebin"
+use_influxdb = False
 
-# Initialize database connection
-## InfluxDB
-try:
-    print('Connecting to the InfluxDB database...')
-    influx_client = InfluxDBClient(influx_host, influx_port, influx_user, influx_password, influx_dbname)
-    influx_client.switch_database(influx_dbname)
-    print("Successfully connected to InfluxDB")
-except Exception as e:
-    print("Failed to connect to InfluxDB database", e)
+# Database authentication
+if use_influxdb:
+    ## InfluxDB
+    influx_host = "flux.dev.iota.pw"
+    influx_port = "8086"
+    influx_user = "admin"
+    influx_password = "admin"
+    influx_dbname = "em_wastebin"
+
+    # Initialize database connection
+    ## InfluxDB
+    try:
+        print('Connecting to the InfluxDB database...')
+        influx_client = InfluxDBClient(influx_host, influx_port, influx_user, influx_password, influx_dbname)
+        influx_client.switch_database(influx_dbname)
+        print("Successfully connected to InfluxDB")
+    except Exception as e:
+        print("Failed to connect to InfluxDB database", e)
+
     
+## PostgreSQL
+psql_host='db.dev.iota.pw'
+psql_port=6000
+psql_dbname='em_wastebin'
+psql_user='arp_b'
+psql_password='iota999'
+
+## PostgreSQL
+try:        
+    # connect to the PostgreSQL server
+    print('Connecting to the PostgreSQL database...')
+    psql_conn = psycopg2.connect(host=psql_host, port=psql_port, user=psql_user, password=psql_password, database=psql_dbname)
+    print("Successfully connected to DB")
+except (Exception, psycopg2.DatabaseError) as e:
+    print("Faied to connect to PostgreSQL database...")
 
 @lm.user_loader
 def load_user(user_id):
@@ -92,7 +113,24 @@ class Bin(db.Model):
         db.session.add ( self )
         # commit change and save the object
         db.session.commit( )
+
+
+class FillLevel(db.Model):
+    __tablename__ = 'last_fill_level'
+    device_id = db.Column(db.BigInteger, primary_key = True, nullable = False)
+    meas_val = db.Column(db.Float)
+    #coordinates = db.Column(Geometry('POINT')) 
     
+    def __init__(self, device_id, meas_val):
+        self.device_id = device_id
+        self.meas_val       = meas_val
+        #self.coordinates   = coordinates
+    def save(self):
+        # inject self into db session    
+        db.session.add ( self )
+        # commit change and save the object
+        db.session.commit( )
+        
 class BinType(db.Model):
     __tablename__ = 'bin_type'
     type_id = db.Column(db.BigInteger, primary_key = True, nullable = False)
@@ -166,7 +204,7 @@ db.create_all()   #create all tables if not exists
 
 def get_fill_percent(dist_from_top):
     fill_level = bin_max_height - dist_from_top
-    if 0 <= 100*fill_level/bin_max_height <= 25:
+    if 100*fill_level/bin_max_height <= 25:
         return 25
     elif 25 < 100*fill_level/bin_max_height <= 50:
         return 50
@@ -174,6 +212,8 @@ def get_fill_percent(dist_from_top):
         return 75
     elif 75 < 100*fill_level/bin_max_height <= 100:
         return 100
+    else:
+        return 0
 
 
 """ 
@@ -184,11 +224,13 @@ def index(path):
     if current_user.is_authenticated:
         geojson_data = []
         all_bin_types = BinType.query.all()
-        meas_name = "sensor_data"
-        res_set = influx_client.query("SELECT * from {} GROUP BY * ORDER BY DESC".format(meas_name))
+        if use_influxdb:
+            meas_name = "sensor_data"
+            res_set = influx_client.query("SELECT * from {} GROUP BY * ORDER BY DESC".format(meas_name))
         num_filled_bins = 0
-        avg_fill_level = 0
         valid_bin_count = 0
+        avg_fill_level = 0
+        fill_level = 0
         for bin_type in all_bin_types:
             bin_data = Bin.query.filter_by(type_id = bin_type.type_id).all()
             for bin in bin_data:
@@ -205,21 +247,26 @@ def index(path):
                             loc = 'Unknown'
                     #print(loc)
                     if bin.device_id:
-                        #sensor_dist = 10
-                        device_ttn_id = Device.query.filter_by(device_id=bin.device_id).first().device_ttn_id
-                        #print(device_ttn_id)
+                        if use_influxdb:
+                            device_ttn_id = Device.query.filter_by(device_id=bin.device_id).first().device_ttn_id
+                            print(device_ttn_id)
                         try:
-                            sensor_dist = list(res_set.get_points(tags={'device_id': device_ttn_id}))[0][field_key]
-                            print(sensor_dist)
+                            if use_influxdb:
+                                # get last sensor value of bin and attached device from influxdb table
+                                sensor_dist = list(res_set.get_points(tags={'device_id': device_ttn_id}))[0][field_key]
+                            else:
+                                # get last sensor value of bin from "last_fill_level" table in PostgreSQL
+                                sensor_dist = FillLevel.query.filter_by(device_id=bin.device_id).first().meas_val 
                             fill_level = get_fill_percent(sensor_dist)
-                        except:
+                        except Exception as e:
+                            print("Error requesting last fill level from database: ", e)
                             fill_level = 0
-                        if fill_level >= 75:
+                        if fill_level == 100:
                             num_filled_bins = num_filled_bins + 1
                         print("bin {0}, fill level: {1}".format(bin.bin_id, fill_level))
                     else:
-                        fill_level = ""
-                    if fill_level:
+                        fill_level = 0
+                    if fill_level > 0:
                         avg_fill_level = avg_fill_level + fill_level
                         valid_bin_count = valid_bin_count + 1
                     try:
@@ -252,12 +299,18 @@ def index(path):
                             "coordinates": [bin.longitude, bin.latitude]
                         }
                     })
+        try:
+            avg_fill_level=100*num_filled_bins/valid_bin_count
+        except:
+            avg_fill_level = "NA"
         return render_template('default.html', active_page='index',
                                     content=render_template('index.html',
                                     geojson_data=geojson_data,
                                     all_bin_types=all_bin_types,
                                     num_filled_bins=num_filled_bins,
-                                    avg_fill_level=avg_fill_level/valid_bin_count))
+                                    avg_fill_level=avg_fill_level,
+                                    all_devices=Device.query.all(),
+                                    all_sensors=Sensor.query.all()))
     else:
         flash("Please register or log in", "danger")
         return render_template('default.html',
@@ -275,13 +328,14 @@ BEGIN OF BIN MANAGER >>>
 def bins_manager():
     all_bin_types = BinType.query.all()
     all_bins = []
-    meas_name = "sensor_data"
-    res_set = influx_client.query("SELECT * from {} GROUP BY * ORDER BY DESC".format(meas_name))
-    sensor = ""
+    if use_influxdb:
+        meas_name = "sensor_data"
+        res_set = influx_client.query("SELECT * from {} GROUP BY * ORDER BY DESC".format(meas_name))
     for bin_type in all_bin_types:
         bin_data = Bin.query.filter_by(type_id = bin_type.type_id).order_by(Bin.bin_id.asc()).all()
-        for bin in bin_data[:30]:
+        for bin in bin_data:
             fill_level = 0
+            sensor = None
             if bin.latitude and bin.longitude is not None:
                 if bin.address:
                     loc = bin.address
@@ -292,55 +346,83 @@ def bins_manager():
                     sensor = Sensor.query.filter_by(sensor_id=device.sensor_id).first()
                     if sensor:
                         try:
-                            sensor_dist = list(res_set.get_points(tags={'device_id': device.device_ttn_id}))[0][field_key]
+                            if use_influxdb:
+                                sensor_dist = list(res_set.get_points(tags={'device_id': device.device_ttn_id}))[0][field_key]
+                            else:
+                                # get last sensor value of bin from "last_fill_level" table in PostgreSQL
+                                sensor_dist = FillLevel.query.filter_by(device_id=device.device_id).first().meas_val 
                             fill_level = get_fill_percent(sensor_dist)
                         except:
                             fill_level = 0
                 all_bins.append({
                             "bin_id": bin.bin_id,
                             "bin_type": bin_type.art,
-                            "fill_level": fill_level if fill_level > 0 else "NA",
+                            "fill_level": fill_level if fill_level else "NA",
                             "device_name": device.device_ttn_id if device else "None",
                             "address" : loc,
                             "coordinates": [bin.latitude, bin.longitude],
                             "sensor": sensor.name if sensor else "None"
                         })
     if request.method == "POST":
-        print(request.form)
+        #print(request.form)
         if request.form["btn"] == "update_bin":
             try:
                 bin_id = request.form["selected_bin"]
+                if bin_id is "":
+                    bin_id = request.form["bin_id"]
                 bin_type = request.form["bin_type"]
                 device = request.form["device"]
-                sensor = request.form["sensor"]
+                try:
+                    sensor = request.form["sensor"]
+                except:
+                    sensor = "Default"
                 loc = request.form["location"].split(",")
+                print(bin_id, bin_type, device, sensor,loc)
                 try:
                     if device == "None":
                         device_id = -1
                     else:
                         device_id = Device.query.filter_by(device_ttn_id=device).first()
-                        if sensor == "None":
-                            sensor_id = -1
-                        else:
-                            sensor_id = Sensor.query.filter_by(name=sensor).first().sensor_id
+                        if sensor != "Default":
+                            if sensor == "None":
+                                sensor_id = -1
+                            else:
+                                sensor_id = Sensor.query.filter_by(name=sensor).first().sensor_id
                             device_id.sensor_id = sensor_id
+                            try:
+                                db.session.commit()
+                                print("Successfully updated sensor {} for device {}".format(sensor_id, device_id.device_id))
+                            except Exception as e:
+                                print("Cannot update device {} in database. Error: ".format(device_id.device_id), e)
+                        device_id = device_id.device_id
                     try:
                         bin = Bin.query.filter_by(bin_id=bin_id).first()
-                        db.session.commit()
+                        if bin:
+                            bin.bin_type = bin_type
+                            bin.device_id = device_id
+                            bin.latitude = loc[0]
+                            bin.longitude = loc[1]
+                            try:
+                                db.session.commit()
+                            except Exception as e:
+                                print("Cannot update bin {} in database. Error: ".format(bin_id), e)
+                                flash("Unable to update bin", "danger")
+                                return redirect("/bins.html")    
+                        else:
+                            print("Cannot find bin {} in database. Creating device...".format(bin_id))
+                            try:
+                                address = geolocator.reverse("{}, {}".format(loc[0], loc[1])).raw["address"]
+                                bin = Bin(bin_id, bin_type, device_id, loc[0], loc[1],address)
+                                bin.save()
+                            except Exception as e:
+                                print("Cannot create bin {}. Error: ".format(bin_id), e)
+                                flash("Unable to create bin", "danger")
+                                return redirect("/bins.html")
                     except Exception as e:
                         print("Cannot update bin {} in database. Error: ".format(bin_id), e)
                         flash("Unable to update bin", "danger")
-                        return redirect("/bins.html")
-                    else:
-                        print("Cannot find bin {} in database. Creating device...".format(bin_id))
-                        try:
-                            bin_id = request.form["bin_id"]
-                            bin = Bin(bin_id, bin_type, device_id, loc[0], loc[1])
-                            bin.save()
-                        except Exception as e:
-                            print("Cannot create bin {}. Error: ".format(bin_id), e)
-                            flash("Unable to create bin", "danger")
-                            return redirect("/bins.html")
+                        return redirect("/bins.html")     
+
                 except Exception as e:
                     print("Cannot find device {} in database. Details:".format(device), e)
                     flash("Unable to update bin", "danger")
@@ -349,7 +431,7 @@ def bins_manager():
                 print("Error parsing POST request: ",e)
                 flash("Unable to update bin", "danger")
                 return redirect("/bins.html")
-            flash("Successfully bins bin", "success")
+            flash("Successfully updated bin", "success")
             return redirect("/bins.html")
         elif request.form["btn"] == "delete_bin":
             try:
@@ -674,4 +756,4 @@ END OF OTHER ROUTING <<<
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0",debug=True,port=5020)
+    app.run(host="0.0.0.0",debug=True,port=5022)

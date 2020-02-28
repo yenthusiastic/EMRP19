@@ -99,7 +99,6 @@
                             <select class="form-control" style="width:100%"
                                 name="sensor">
                                 <option id="opt_sensor_None">None</option>
-                                <option id="opt_sensor_Default">Default</option>
                                 {% if all_sensors %}
                                 {% for sensor in all_sensors%}
                                 <option id="opt_sensor_{{sensor.name}}">{{sensor.name}}</option>
@@ -168,15 +167,16 @@
         document.getElementById("opt_device_" + selected_row[3]).selected = true;
         document.getElementById("opt_sensor_" + selected_row[4]).selected = true;
         document.getElementsByName("location")[0].value = selected_row[5];
-        document.getElementsByName("selected_bin")[0].value = selected_row[0];
+        document.getElementsByName("selected_bin")[0] = selected_row[0];
         document.getElementsByName("delete_bin")[0].value = selected_row[0];
     });
 
     function updateEditForm(){
         document.getElementsByName("bin_id")[0].outerHTML = '<input class="form-control" name="bin_id" type="text">';
-        document.getElementById("opt_device_None").selected = true;
-        document.getElementById("opt_sensor_Default").selected = true;
-        document.getElementsByName("location")[0].value = ""
+        document.getElementById("opt_bin_None").selected = true;
+        document.getElementById("opt_devic_None").selected = true;
+        document.getElementById("opt_sensor_None").selected = true;
+        document.getElementsByName("location")[0].value = "";
     }
 
     $(document).ready(function() {

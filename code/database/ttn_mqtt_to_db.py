@@ -1,9 +1,8 @@
 """
-Python script to subscribe to TTN MQTT Broker to fetch sensor data and save to InfluxDB "sensor_data" table
-and update the location of the gateway in the "gateway" table in PostgreSQL database
+Python script to subscribe to TTN MQTT Broker to fetch sensor data and save to InfluxDB
 TTN MQTT API Reference: https://www.thethingsnetwork.org/docs/applications/mqtt/api.html
 Original version: https://github.com/emrp/emrp2018_Moers_Trashbins/blob/master/code/DatabaseScripts/mqtt_connect.py
-Modified by Thu Nguyen 14.01.2020
+Modified by Thu Nguyen 13.02.2020
 """ 
 # Import required libraries
 ## Paho Library for MQTT communication
@@ -18,15 +17,15 @@ import psycopg2
 
 # Database authentication
 ## InfluxDB
-influx_host = "****"
-influx_port = 9999
+influx_host = "*****"
+influx_port = "****"
 influx_user = "****"
 influx_password = "****"
 influx_dbname = "****"
 
 ## PostgreSQL
 psql_host='****'
-psql_port=9999
+psql_port=5555
 psql_dbname='****'
 psql_user='****'
 psql_password='****'
@@ -51,6 +50,7 @@ try:
 except (Exception, psycopg2.DatabaseError) as e:
     print("Faied to connect to PostgreSQL database...")
 
+    
 # Application authentication, can be found under APPLICATION OVERVIEW in the TTN console 
 ## Application EUI & ID
 APPEUI = "70B3D57ED00271EA"
@@ -61,6 +61,7 @@ PSW    = 'ttn-account-v2.DLYXYF8PY_Py6SaidkOqBo_SDokxXnwSl5khQPM2PVs'
 
 # Key of dictionary object from which to read the sensor data from
 payload_key = "digital_out_1"
+device_key = "digital_out_2"
 
 #Call back functions
 
@@ -110,31 +111,72 @@ def on_message(mqttc,obj,msg):
         payload_fields = x["payload_fields"]
 
         #these if conditions is used when feeding data to sensor data table as we have currently three devices and to recognize device by hardcoded id
-        if device == "heltech_lora":
-              fetched_deviceId = 501
+#         if device == "heltech_lora":
+#               fetched_deviceId = 501
         
         # print for every gateway that has received the message and extract RSSI
         for gw in gateways:
 
             #inside metadata, we have gateways and inside gateways we have all these below values . they are in dictionary data type as well
             gateway_id = gw["gtw_id"]
-            rssi = gw["rssi"]
-            snr = gw['snr']
-          
             latitude = gw['latitude']
             longitude = gw['longitude']
             timestamp = gw['time']
-            channel = gw['channel']
-
-            # insert data into InfluxDB table
+            altitude = gw['altitude']
+            
+            # insert sensor measurement into InfluxDB table
             try:
                 data = [{"measurement": "sensor_data", "time": timestamp, "fields": {"meas_value": payload_fields[payload_key]}, "tags": {"gateway_id": gateway_id, "device_id": device}}]
                 influx_client.write_points(data)      
                 print("Successfully inserted sensor data into InfluxDB")
-             #if any exception occurs during database communication
             except Exception as e:
                 print("Failed to insert record into InfluxDB table: ", e)
 
+            # update last sensor measurement in PostgreSQL table
+            try:
+                sensor_val = payload_fields[payload_key]
+                
+                query = "SELECT device_id, latitude, longitude from public.bin INNER JOIN public.device ON (bin.device_id = device.device_id) WHERE device_ttn_id = '{}'".format(device)
+                cur = psql_conn.cursor()
+                cur.execute(query)
+                psql_conn.commit()
+                res = cur.fetchone()
+                if res:
+                    query = "SELECT * from public.last_fill_level WHERE device_id = {}".format(res[0])
+                    cur.execute(query)
+                    psql_conn.commit()
+                    ret = cur.fetchone()
+                    if ret:
+                        query = """ UPDATE public."last_fill_level" SET meas_val = {0}, coordinates = POINT({1},{2}) WHERE device_id = {3}""".format(sensor_val, res[1], res[2], res[0])
+                    else:
+                        query = """ INSERT INTO public."last_fill_level"(device_id, meas_val, coordinates) VALUES ({0},{1},POINT({2},{3}))""".format(res[0], sensor_val, res[1], res[2])
+                    print("Executing query...", query)
+                    cur.execute(query)
+                    psql_conn.commit()
+                    print("Successfully inserted/updated sensor data in PostgreSQL table")
+                else:
+                    print("Failed to insert/update PostgreSQL table: Device {} not found".format(device))
+            except Exception as e:
+                print("Failed to insert/update PostgreSQL table: ", e)
+                
+            #insert gateway or update information into PostgreSQL table
+#             try:
+#                 query = "SELECT * FROM ttn_gateway WHERE gw_ttn_id = ''".format(gateway_id)
+#                 cur = psql_conn.cursor()
+#                 cur.execute(query)
+#                 psql_conn.commit()
+#                 res = cur.fetchone()
+#                 if res:
+#                     query = "UPDATE ttn_gateway SET latitude = {}, longitude = {}, altitude = {} WHERE gw_ttn_id = '{}'".format(latitude, longitude, altitude, gateway_id)
+#                 else:
+#                     query = "INSERT INTO ttn_gateway(latitude, longitude, altitude, gw_ttn_id) values ({}, {}, {}, '{}')".format(latitude, longitude, altitude, gateway_id)
+#                 cur.execute(msg)
+#                 psql_conn.commit()
+#                 print("Successfully updated gateway data in PostgreSQL database")
+#              #if any exception occurs during database communication
+#             except Exception as e:
+#                 print("Error executing query {}: Failed to update gateway data in PostgreSQL table: ".format(query), e)
+            
             
     #if any exception occurs during message sending process from TTN
     except Exception as e:
