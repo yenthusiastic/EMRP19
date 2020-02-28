@@ -4,7 +4,15 @@ Is based on previous work by EMRP18 project _"Smart Cities: Internet of Waste Bi
 
 The following document will only summarize the steps taken and highlight **(in bold)** the modifications made compared to the previous work, for details please refer to the linked documentation above.
 
-#### 1. Prepare hardware
+## 1. Prepare hardware
+### Components
+ - Heltec WiFi LoRa 32 Board ([V1 or V2](https://heltec.org/project/wifi-lora-32/?lang=en)) with 868MHz antenna
+ - Adafruit Time of Flight Distance Sensor breakout board [VL53L0X](https://www.adafruit.com/product/3316)
+ - 1x Pololu 5V voltage converter [S7V7F5](https://www.pololu.com/product/2119)
+ - 2x 18650 protected Li-ion cells
+ - 2 Slot 18650 battery holder
+
+
 - Required components:
     - Heltec WiFi_LoRa_32 ESP32-based module with 868MHz antenna (V1)
     - [Adafruit VL53L0X](https://www.adafruit.com/product/3316) Time-of-flight distance sensor breakout board
