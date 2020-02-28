@@ -20,7 +20,7 @@ The following document will only summarize the steps taken and highlight **(in b
 
 > Connect the antenna to the Heltec WiFi_LoRa_32 module before powering it with 5V over mciroUSB cable.
 
-#### 2. Set up Arduino IDE
+## 2. Set up Arduino IDE
 - [Install Arduino IDE](https://github.com/emrp/emrp2018_Moers_Trashbins/blob/master/documentation/from_sensor_to_ttn.md#2-software-installation)
 - Within Arduino IDE:
     - Add board definitions for the `Heltec WiFi_LoRa_32` module **using instructions from [Heltec documentation](https://docs.heltec.cn/#/en/user_manual/how_to_install_esp32_Arduino)**. The method described in EMRP18 project did not work for this module (V1).
@@ -44,7 +44,8 @@ The following document will only summarize the steps taken and highlight **(in b
 
             - After this the compiler should compile fine.
 
-#### 3. Hardware Connections
+## 3. Hardware Connections
+![https://github.com/Heltec-Aaron-Lee/WiFi_Kit_series/blob/master/PinoutDiagram/WIFI_LoRa_32_V1.pdf](https://github.com/yenthusiastic/EMRP19/blob/master/media/WIFI_LoRa_32_V1.png)
 - The wiring between the Heltec WiFi_LoRa_ESP32 V1 board and the VL53L0X sensor is summarized in the following table:
 
 Heltec WiFi_LoRa_ESP32 V1 Pin | VL53L0X Breakout board Pin 
@@ -57,11 +58,11 @@ Heltec WiFi_LoRa_ESP32 V1 Pin | VL53L0X Breakout board Pin
 
 The pin-out diagram of the Heltec WiFi_LoRa_ESP32 V1 is available [here](https://github.com/Heltec-Aaron-Lee/WiFi_Kit_series/blob/master/PinoutDiagram/WIFI_LoRa_32_V1.pdf). 
 
-#### 4. Set up The Things Network Console
+## 4. Set up The Things Network Console
 - [Add a new application](https://github.com/emrp/emrp2018_Moers_Trashbins/blob/master/documentation/from_sensor_to_ttn.md#41-setting-up-a-new-ttn-application)
 - [Register a new device with OTAA Activation method](https://github.com/emrp/emrp2018_Moers_Trashbins/blob/master/documentation/from_sensor_to_ttn.md#43-registering-a-device)
 
-#### 5. Upload code to ESP32 module
+## 5. Upload code to ESP32 module
 - Download the code from [here](code/heltec_vl53l0x_ttn/heltec_vl53l0x_ttn.ino).
 - [Edit the LMIC config file](https://github.com/emrp/emrp2018_Moers_Trashbins/blob/master/documentation/from_sensor_to_ttn.md#514-editing-the-lmic-config-file).
 - [Copy the device keys from TTN Console to the code.](https://github.com/emrp/emrp2018_Moers_Trashbins/blob/master/documentation/from_sensor_to_ttn.md#512-device-keys)
@@ -72,7 +73,7 @@ The pin-out diagram of the Heltec WiFi_LoRa_ESP32 V1 is available [here](https:/
 - Connect the board to PC, under `Tools -> Port` select the correct port
 - Upload the code
 
-#### 6. Verify data received by TTN gateway
+## 6. Verify data received by TTN gateway
 
 - Check the TTN Console for received data
 
