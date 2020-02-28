@@ -45,7 +45,9 @@ The following document will only summarize the steps taken and highlight **(in b
             - After this the compiler should compile fine.
 
 ## 3. Hardware Connections
-![https://github.com/Heltec-Aaron-Lee/WiFi_Kit_series/blob/master/PinoutDiagram/WIFI_LoRa_32_V1.pdf](https://github.com/yenthusiastic/EMRP19/blob/master/media/WIFI_LoRa_32_V1.png)
+![https://github.com/Heltec-Aaron-Lee/WiFi_Kit_series/blob/master/PinoutDiagram/WIFI_LoRa_32_V1.pdf](Heltec WiFi_LoRa_ESP32 V1)
+[Source](https://github.com/Heltec-Aaron-Lee/WiFi_Kit_series/blob/master/PinoutDiagram/WIFI_LoRa_32_V1.pdf).
+
 - The wiring between the Heltec WiFi_LoRa_ESP32 V1 board and the VL53L0X sensor is summarized in the following table:
 
 Heltec WiFi_LoRa_ESP32 V1 Pin | VL53L0X Breakout board Pin 
@@ -56,7 +58,17 @@ Heltec WiFi_LoRa_ESP32 V1 Pin | VL53L0X Breakout board Pin
  4 (SDA) | SDA
  13 | XSHUT 
 
-The pin-out diagram of the Heltec WiFi_LoRa_ESP32 V1 is available [here](https://github.com/Heltec-Aaron-Lee/WiFi_Kit_series/blob/master/PinoutDiagram/WIFI_LoRa_32_V1.pdf). 
+Battery | Voltage Converter
+---|---
+Battery + | VIN
+Battery - | GND
+
+
+Voltage Converter | Heltec Board
+---|---
+VOUT | 5V
+GND | GND
+
 
 ## 4. Set up The Things Network Console
 - [Add a new application](https://github.com/emrp/emrp2018_Moers_Trashbins/blob/master/documentation/from_sensor_to_ttn.md#41-setting-up-a-new-ttn-application)
