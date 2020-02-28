@@ -45,10 +45,10 @@ The following document will only summarize the steps taken and highlight **(in b
             - After this the compiler should compile fine.
 
 ## 3. Hardware Connections
-![https://github.com/Heltec-Aaron-Lee/WiFi_Kit_series/blob/master/PinoutDiagram/WIFI_LoRa_32_V1.pdf](Heltec WiFi_LoRa_ESP32 V1)
+![Heltec WiFi_LoRa_ESP32 V1](https://github.com/yenthusiastic/EMRP19/blob/master/media/WIFI_LoRa_32_V1.png)
 [Source](https://github.com/Heltec-Aaron-Lee/WiFi_Kit_series/blob/master/PinoutDiagram/WIFI_LoRa_32_V1.pdf).
 
-- The wiring between the Heltec WiFi_LoRa_ESP32 V1 board and the VL53L0X sensor is summarized in the following table:
+The wiring between the Heltec WiFi_LoRa_ESP32 V1 board and the VL53L0X sensor is summarized in the following table:
 
 Heltec WiFi_LoRa_ESP32 V1 Pin | VL53L0X Breakout board Pin 
 ---------|----------
@@ -57,17 +57,6 @@ Heltec WiFi_LoRa_ESP32 V1 Pin | VL53L0X Breakout board Pin
  15 (SCL) | SCL
  4 (SDA) | SDA
  13 | XSHUT 
-
-Battery | Voltage Converter
----|---
-Battery + | VIN
-Battery - | GND
-
-
-Voltage Converter | Heltec Board
----|---
-VOUT | 5V
-GND | GND
 
 
 ## 4. Set up The Things Network Console
@@ -94,3 +83,26 @@ GND | GND
 - Below is the detailed description of the data
 
 ![ttn-data](../media/ttn_data.png)
+
+
+## Battery Operation
+The hardware node setup needs to be battery powered in field operation, therefore its low power capability needs to be evaluated.
+The Heltec board was directly powered over the battery input port from a benchtop power supply at 3.7V. 
+
+The current consumption in deep sleep mode was measured for both, V1 and V2 boards:
+ - V1: 15mA
+ - V2: 2mA
+
+
+The wiring of the power system for the battery powered node operation is summarized in the tables below:
+
+Battery | Voltage Converter
+---|---
++ | VIN
+- | GND
+
+
+Voltage Converter | Heltec Board
+---|---
+VOUT | 5V
+GND | GND
