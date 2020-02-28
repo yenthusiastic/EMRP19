@@ -57,8 +57,7 @@ Details on how to set up the microcontroller, the sensor ready for uploading enc
 #### 3.2. Supporting applications
 
 - Prerequisites
-    - Ubuntu 18.04 LTS
-    - Python 3.7
+    - [Python 3.7](https://www.python.org/downloads/release/python-376/)
 
 - On the backend, the following applications are required:
 

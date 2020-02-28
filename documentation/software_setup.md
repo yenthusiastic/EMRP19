@@ -1,10 +1,10 @@
 ### Sub domains for application servers
-- InfluxDB: https://flux.dev.iota.pw (port 8086)
-- PostgreSQL: db.dev.iota.pw (port 6000)
-- PgAdmin: https://pg.dev.iota.pw (port 5555)
-- MQTT Broker: https://mqtt.dev.iota.pw (port 1882)
-- Grafana: https://graf.dev.iota.pw (port 3000)
-- Node Red: https://red.dev.iota.pw (port 1880) 
+- InfluxDB: https://flux.**** (port 8086)
+- PostgreSQL: db.**** (port 6000)
+- PgAdmin: https://pg.**** (port 5555)
+- MQTT Broker: https://mqtt.**** (port 1882)
+- Grafana: https://graf.**** (port 3000)
+- Node Red: https://red.**** (port 1880) 
 
 ### Docker launches
 All 3 application servers above are launched with Docker in detached mode with the `-d` tag

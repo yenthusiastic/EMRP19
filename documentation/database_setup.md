@@ -1,5 +1,15 @@
 ### Database Setup Guide
-#### 1. Database Relational Structure
+#### 1. Launch Database Servers with Docker
+Pre-requisites:
+- Latest version of Docker installed. To install the lastest version, check the [official Docker installation guide](https://docs.docker.com/install/).
+
+In Docker Terminal (Windows) or Terminal (Liunx) run the following commands to pull and lauch PostgreSQL (mandatory) and InfluxDB (optional) servers:
+```
+docker run -d --name postgres progres
+docker run -d --name influx_server influxdb
+```
+
+#### 2. Database Relational Structure
 Similar to last year's project, this project uses PostgreSQL as the database server on the backend to store relational data tables.
 
 The original database structure from EMRP18 is modified such that the `sensor_data` table is replaced by a new table called `last_fill_level` which stores only the last sensor value of any active device received from the MQTT broker, as well as its location. The reason being PostgreSQL is not optimized for streaming data, which is the sensor data in this case, but is more suitable for relational data tables. Additionally, a new table called `bin_type` is added to describe the common properties of the bins. In this case, we only have 1 bin type as can be seen in the [CSV data given by ENNI](../code/database/paper_bins.csv).
@@ -16,7 +26,7 @@ Below is a digram of the new database structure.
 - remaining tables are stored in ProgreSQL
 
 
-#### 2. Initialization of database
+#### 3. Initialization of database
 - Insert the first bin type into `bin_type` table:
 ```
 type_id: 1
@@ -53,5 +63,5 @@ longitude: 6.54
 altitude: 7
 ```
 
-#### 3. Fetch sensor data from TTN MQTT Broker and save to database
+#### 4. Fetch sensor data from TTN MQTT Broker and save to database
 As shown in [section 6 of the LoRa node setup guide](node_setup.md#6), the payload from TTN is a dictionary with several parameters, among which we save the value of `digital_out_1` from the `Payload fields` as the measurement value in `last_fill_level` PostgreSQL table. The `digital_out_1` value can optionally be saved as sensor data and the `gtw_id` and `device_id` as tags for the InfluxDB table. The Python script to perform this task is found [here](../code/database/ttn_mqtt_to_db.py). 
