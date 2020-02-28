@@ -8,18 +8,17 @@ The following document will only summarize the steps taken and highlight **(in b
 
 ## 1. Prepare hardware
 ### Components
+#### Required:
  - Heltec WiFi LoRa 32 Board ([V1 or V2](https://heltec.org/project/wifi-lora-32/?lang=en)) with 868MHz antenna
  - Adafruit Time of Flight Distance Sensor breakout board [VL53L0X](https://www.adafruit.com/product/3316)
+#### Optional (node operation) 
  - 1x Pololu 5V voltage converter [S7V7F5](https://www.pololu.com/product/2119)
  - 2x 18650 protected Li-ion cells
  - 2 Slot 18650 battery holder
 
+> Pin headers have to be soldered to both modules. 
 
-- Required components:
-    - Heltec WiFi_LoRa_32 ESP32-based module with 868MHz antenna (V1)
-    - [Adafruit VL53L0X](https://www.adafruit.com/product/3316) Time-of-flight distance sensor breakout board
-- Pin headers have to be soldered to both modules. 
-- Connect the antenna to the Heltec WiFi_LoRa_32 module before powering it with 5V over mciroUSB cable.
+> Connect the antenna to the Heltec WiFi_LoRa_32 module before powering it with 5V over mciroUSB cable.
 
 #### 2. Set up Arduino IDE
 - [Install Arduino IDE](https://github.com/emrp/emrp2018_Moers_Trashbins/blob/master/documentation/from_sensor_to_ttn.md#2-software-installation)
