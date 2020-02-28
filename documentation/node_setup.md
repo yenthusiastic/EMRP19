@@ -1,3 +1,5 @@
+# Node Setup Guide
+
 A summary of steps to set up the hardware needed for monitoring the fill level of the trash bin and send the data to The Things Network.
 
 Is based on previous work by EMRP18 project _"Smart Cities: Internet of Waste Bins with LoRa"_ as described in [this documentation](https://github.com/emrp/emrp2018_Moers_Trashbins/blob/master/documentation/from_sensor_to_ttn.md).
@@ -28,10 +30,11 @@ The following document will only summarize the steps taken and highlight **(in b
 
         ![heltec_lib](../media/heltec-lib.PNG)
 
-        - Install `Adafruit VL53L0X` library by `Adafruit`
-        - Install `MCCI LoRaWAN LMIC` library by `IBM, Mathis Koojiman, Terry Moore, ChaeHee Won, Frank Rose`
-        - Install (if not available) or **UPDATE** (if already existing) the `ArduinoJson` library by `Benoint Blanchon`. **It is important to have the latest version of the library, otherwise the CayenneLPP library will throw error**
-        - Install `CayeneLPP` library 
+        - Install `Adafruit VL53L0X` library by `Adafruit` (tested version 1.0.5)
+        - Install `MCCI LoRaWAN LMIC` library by `IBM, Mathis Koojiman, Terry Moore, ChaeHee Won, Frank Rose` (tested version 3.1.0)
+        - Install `Heltec ESP32 Dev-Boards` by `Heltec Automation` (tested version 1.0.9)
+        - Install (if not available) or **UPDATE** (if already existing) the `ArduinoJson` library by `Benoint Blanchon`. (tested version 6.14.1) **It is important to have the latest version of the library, otherwise the CayenneLPP library will throw error**
+        - Install `CayenneLPP` library by `Electronic Cats` (tested version 1.0.3)
         - `CayeneLPP` library can be modified `(WITH CAUTION)` if the following error appears in the compiler output of Arduino IDE:
 
             ![cayenne_lib_err](../media/cayenne_lib_error.png)
