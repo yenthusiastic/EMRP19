@@ -86,23 +86,29 @@ Heltec WiFi_LoRa_ESP32 V1 Pin | VL53L0X Breakout board Pin
 
 
 ## Battery Operation
-The hardware node setup needs to be battery powered in field operation, therefore its low power capability needs to be evaluated.
-The Heltec board was directly powered over the battery input port from a benchtop power supply at 3.7V. 
-
-The current consumption in deep sleep mode was measured for both, V1 and V2 boards:
- - V1: 15mA
- - V2: 2mA
-
 
 The wiring of the power system for the battery powered node operation is summarized in the tables below:
 
 Battery | Voltage Converter
 ---|---
-+ | VIN
-- | GND
+Positive | VIN
+Negative | GND
 
 
 Voltage Converter | Heltec Board
 ---|---
 VOUT | 5V
 GND | GND
+
+
+The hardware node setup needs to be battery powered in field operation, therefore its low power capability needs to be evaluated.
+In the test setup the Heltec board was directly powered over the battery input port from a benchtop power supply at 3.7V. 
+
+The current consumption in deep sleep mode was measured for both, V1 and V2 boards:
+
+Board | Current
+---|---
+ V1 | 15mA
+ V2 | 2mA
+
+
