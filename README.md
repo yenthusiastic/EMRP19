@@ -4,10 +4,11 @@ Environmental Monitoring Reasearch Project WS19/20 to monitor fill-level of tras
 Built upon structure of previous EMRP18 project ["Smart Cities: Internet of Waste Bins with LoRa"](https://github.com/emrp/emrp2018_Moers_Trashbins) with several modifications.
 
 **Supervisor:** Prof. Dr. Rolf Becker
+
 **Project members:** Andreas Markwart, Thi Yen Thu Nguyen, Sarah Maria Rostalski, Nader Kaake
 
 ### Table of contents
-[1. Problem Statement](#1-problem-statement)
+[1. Introduction](#1-introduction)
 
 [2. Materials and methods](#2-materials-and-methods)
 
@@ -17,7 +18,7 @@ Built upon structure of previous EMRP18 project ["Smart Cities: Internet of Wast
 
 [5. Conclusion and outlook](#5-conclusion-and-outlook)
 
-### 1. Problem Statement
+### 1. Introduction
 
 Waste bin level management in big cities is one of the main topics in planning smart cities. Public waste bins help to keep the uraban scene and the environment cleaner. However, traditionally environment workers have to manually identify whether a bin is full to empty it. This makes it time-consuming and inefficient as every single bin has to be checked. The variations in fill level also depend greatly on the location of the bin and the occurence of events in the surroundings. Additionally, current clearing schemes rely on regular schedules which are inflexible for irregular events. To clear a bin when it is not empty is also a waste of resource.
 
@@ -69,7 +70,7 @@ Details on how to set up the microcontroller, the sensor ready for uploading enc
 
     The full instructions on how to set up the Flask web server can be found in the [Flask Web Server Setup Guide](documentation/flask_setup.md).
 
-- A stand-alone MQTT Subscriber application is developed in Python to retrieve LoRa packets uploaded on TTN and insert values in database. The source code can be found [here](code/ttn_mqtt_to_db.py). Please run the following commands in Terminal to install required libraries before executing the script:
+- A stand-alone MQTT Subscriber application is developed in Python to retrieve LoRa packets uploaded on TTN and insert values in database. The source code can be found [here](code/database/ttn_mqtt_to_db.py). Please run the following commands in Terminal to install required libraries before executing the script:
     ```
     pip install paho-mqtt
     pip install psycopg2
@@ -113,7 +114,7 @@ Additionally, the web interface allows the system manager to make changes to all
 
 Last but not least, the stand-alone Route Calculation application is able retrieve the locations of bins that reach a certain fill level and reliably generate the shortest travel path between these bins to save time and resources in clearing them. The following picture highlights in red the calculated route for bins that are more than 60% filled:
 
-<img src="media/shortest-route.png" style="width: 40%">
+<img src="media/shortest-route.png" style="height: 40%">
 
 The application also generates at the same time vector files of the calculated route which can easily be imported into third party software like QGIS for further analysis.
 
