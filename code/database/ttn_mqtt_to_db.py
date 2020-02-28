@@ -4,6 +4,11 @@ TTN MQTT API Reference: https://www.thethingsnetwork.org/docs/applications/mqtt/
 Original version: https://github.com/emrp/emrp2018_Moers_Trashbins/blob/master/code/DatabaseScripts/mqtt_connect.py
 Modified by Thu Nguyen 13.02.2020
 """ 
+# Please run the following commands in Terminal to install required libraries
+# pip install paho-mqtt
+# pip install psycopg2
+# pip install influxdb
+
 # Import required libraries
 ## Paho Library for MQTT communication
 import paho.mqtt.client as mqtt
