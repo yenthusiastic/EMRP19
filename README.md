@@ -8,9 +8,13 @@ Built upon structure of previous EMRP18 project ["Smart Cities: Internet of Wast
 
 ### Table of contents
 [1. Problem Statement](#1-problem-statement)
+
 [2. Materials and methods](#2-materials-and-methods)
+
 [3. Implementation](#3-implementation) 
+
 [4. Results and discussion](#4-results-and-discussion)
+
 [5. Conclusion and outlook](#5-conclusion-and-outlook)
 
 ### 1. Problem Statement
