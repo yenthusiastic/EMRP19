@@ -11,7 +11,7 @@ The following document will only summarize the steps taken and highlight **(in b
 #### Required:
  - Heltec WiFi LoRa 32 Board ([V1 or V2](https://heltec.org/project/wifi-lora-32/?lang=en)) with 868MHz antenna
  - Adafruit Time of Flight Distance Sensor breakout board [VL53L0X](https://www.adafruit.com/product/3316)
-#### Optional (node operation) 
+#### Optional ([Battery Operation](https://github.com/yenthusiastic/EMRP19/blob/master/documentation/node_setup.md#battery-operation)) 
  - 1x Pololu 5V voltage converter [S7V7F5](https://www.pololu.com/product/2119)
  - 2x 18650 protected Li-ion cells
  - 2 Slot 18650 battery holder
