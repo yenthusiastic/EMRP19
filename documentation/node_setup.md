@@ -64,9 +64,9 @@ Heltec WiFi_LoRa_ESP32 V1 Pin | VL53L0X Breakout board Pin
 - [Register a new device with OTAA Activation method](https://github.com/emrp/emrp2018_Moers_Trashbins/blob/master/documentation/from_sensor_to_ttn.md#43-registering-a-device)
 
 ## 5. Upload code to ESP32 module
-- Download the code from [here](code/heltec_vl53l0x_ttn/heltec_vl53l0x_ttn.ino).
+- Download the code from [here](code/garbage_bin__heltech_vl53l0x_ttn/garbage_bin__heltech_vl53l0x_ttn.ino).
 - [Edit the LMIC config file](https://github.com/emrp/emrp2018_Moers_Trashbins/blob/master/documentation/from_sensor_to_ttn.md#514-editing-the-lmic-config-file).
-- [Copy the device keys from TTN Console to the code.](https://github.com/emrp/emrp2018_Moers_Trashbins/blob/master/documentation/from_sensor_to_ttn.md#512-device-keys)
+- [Copy the device keys from TTN Console to the code.](node_firmware.md#variables-to-be-change)
 - Under `Tools -> Board` choose **WiFi LoRa 32** from `Heltec ESP32 Arduino`
 
 ![board-select](../media/board.png)
