@@ -24,7 +24,7 @@ Waste bin level management in big cities is one of the main topics in planning s
 
 In order to address this problem, this project extends the work of the previous EMRP18 project in an attempt to offer a fully operational solution for managing the fill level of a certain type of waste bins in the city of Moers. The basic idea is to use independent hardware modules that can be easily mounted inside the bins to collect data reflecting the fill level of the bin. The data is transmitted through LoRa protocol to the backend services where it is stored. The network of bins as well as hardware modules are digitally represented by a database which can be conveniently visualized for better management.
 
-A meeting with ENNI, an infrastructure service provider for Moers and other cities in the region, also the main stakeholder of the project is planned at the of the project to demonstrate the concept, as well as the functional prototype. 
+A meeting with ENNI, an infrastructure service provider for Moers and other cities in the region, also the main stakeholder of the project is planned at the end of the project to demonstrate the concept, as well as the functional prototype. 
 
 ### 2. Materials and methods
 
