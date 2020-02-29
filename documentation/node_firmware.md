@@ -10,7 +10,7 @@ The main function of the programm is to take a distance measurement from the `VL
 ![Programm Logic Flow](../media/node_firmware_program_logic_flow.jpg)
 
 ## Variables to be change
-The follwong variables have to be changed for every node.
+The following variables have to be changed for every node.
 
 Integer identifier for the Waste Bin Fill Level Management System, used to identify every node in the user interface and database.
 ``#define DEVICE_ID``
