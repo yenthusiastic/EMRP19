@@ -11,3 +11,13 @@ The main function of the programm is to take a distance measurement from the `VL
 
 ## Variables to be change
 The follwong variables have to be changed for every node.
+
+
+Each registered device from the TTN application has its unique **Network Session Key**, **App Session Key** and **Device Address** and can be found on the each [`Device Overview`](https://github.com/emrp/emrp2018_Moers_Trashbins/blob/master/pictures/sensor_node_ttn/ttn_device_overview.jpg) page. 
+These values have to be copied in to the following variables inside the code:
+
+ - ``static const u1_t PROGMEM u1_t NWKSKEY[16]``: little-endian format
+ - ``static const u1_t PROGMEM APPSKEY[16]``: little-endian format
+ - ``static const u4_t DEVADDR``: little-endian format
+
+The correct endian formats are provided by clicking on the buttons right next to each key's values on the TTN [`Device Overview`](https://github.com/emrp/emrp2018_Moers_Trashbins/blob/master/pictures/sensor_node_ttn/ttn_device_overview.jpg) page.
