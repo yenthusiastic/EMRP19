@@ -12,12 +12,13 @@ The main function of the programm is to take a distance measurement from the `VL
 ## Variables to be change
 The follwong variables have to be changed for every node.
 
+Integer identifier for the Waste Bin Fill Level Management System, used to identify every node in the user interface and database.
+``#define DEVICE_ID``
 
-Each registered device from the TTN application has its unique **Network Session Key**, **App Session Key** and **Device Address** and can be found on the each [`Device Overview`](https://github.com/emrp/emrp2018_Moers_Trashbins/blob/master/pictures/sensor_node_ttn/ttn_device_overview.jpg) page. 
-These values have to be copied in to the following variables inside the code:
+Each device from the TTN application has its unique **Network Session Key**, **App Session Key** and **Device Address**, they can be found in the `Device Overview` page of each device. 
+These values have to be copied into the following variables in the `garbage_bin__heltech_vl53l0x_ttn.ino` code:
 
- - ``static const u1_t PROGMEM u1_t NWKSKEY[16]``: little-endian format
- - ``static const u1_t PROGMEM APPSKEY[16]``: little-endian format
- - ``static const u4_t DEVADDR``: little-endian format
+ - ``static const u1_t PROGMEM u1_t NWKSKEY[16]``: MSB format
+ - ``static const u1_t PROGMEM APPSKEY[16]``: MSB format
+ - ``static const u4_t DEVADDR``: MSB format
 
-The correct endian formats are provided by clicking on the buttons right next to each key's values on the TTN [`Device Overview`](https://github.com/emrp/emrp2018_Moers_Trashbins/blob/master/pictures/sensor_node_ttn/ttn_device_overview.jpg) page.
