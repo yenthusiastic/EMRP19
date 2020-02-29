@@ -1,11 +1,11 @@
 # EMRP19: Waste Bin Fill Level Management
-Environmental Monitoring Reasearch Project WS19/20 to monitor fill-level of trash bins in the city of Moers using LoRa technology 
+Environmental Monitoring Research Project WS19/20 to monitor fill-level of trash bins in the city of Moers using LoRa technology 
 
-Built upon structure of previous EMRP18 project ["Smart Cities: Internet of Waste Bins with LoRa"](https://github.com/emrp/emrp2018_Moers_Trashbins) with several modifications.
+Built upon the structure of previous EMRP18 project ["Smart Cities: Internet of Waste Bins with LoRa"](https://github.com/emrp/emrp2018_Moers_Trashbins) with several modifications.
 
 **Supervisor:** Prof. Dr. Rolf Becker
 
-**Project members:** Andreas Markwart, Thi Yen Thu Nguyen, Sarah Maria Rostalski, Nader Kaake
+**Project members:** Andreas Markwart, Thi Yen Thu Nguyen, Sarah-Maria Rostalski, Nader Kaake
 
 ### Table of contents
 [1. Introduction](#1-introduction)
@@ -20,7 +20,7 @@ Built upon structure of previous EMRP18 project ["Smart Cities: Internet of Wast
 
 ### 1. Introduction
 
-Waste bin level management in big cities is one of the main topics in planning smart cities. Public waste bins help to keep the uraban scene and the environment cleaner. However, traditionally environment workers have to manually identify whether a bin is full to empty it. This makes it time-consuming and inefficient as every single bin has to be checked. The variations in fill level also depend greatly on the location of the bin and the occurence of events in the surroundings. Additionally, current clearing schemes rely on regular schedules which are inflexible for irregular events. To clear a bin when it is not empty is also a waste of resource.
+Waste bin level management in big cities is one of the main topics in planning smart cities. Public waste bins help to keep the urban scene and the environment cleaner. However, traditionally employees of the municipal cleaning companies have to manually identify whether a bin is full to empty it. This makes it time-consuming and inefficient as every single bin has to be checked. The variations in fill level also depend greatly on the location of the bin and the occurrence of events in the surroundings. Additionally, current clearing schemes rely on regular schedules which are inflexible for irregular events. To clear a bin when it is not empty is also a waste of resource.
 
 In order to address this problem, this project extends the work of the previous EMRP18 project in an attempt to offer a fully operational solution for managing the fill level of a certain type of waste bins in the city of Moers. The basic idea is to use independent hardware modules that can be easily mounted inside the bins to collect data reflecting the fill level of the bin. The data is transmitted through LoRa protocol to the backend services where it is stored. The network of bins as well as hardware modules are digitally represented by a database which can be conveniently visualized for better management.
 
@@ -47,8 +47,8 @@ The prototype of the measurement device has the following requirements:
 - It should be fully enclosed to prevent physical damage and avoid contact with the trash
 - It should automatically senses fill level at regular intervals
 - It should transmit sensor data over LoRaWAN protocol 
-- Transmitted packets should preferrably be encoded
-- Power-saving cabability is desirable to minimize battery usage and thus less effort  
+- Transmitted packets should preferably be encoded
+- Power-saving capability is desirable to minimize battery usage and thus less effort  
 
 To fulfill these requirements, the microcontroller used in the final prototype is the `Heltec LoRa board v1` which comes with built-in LoRa and deep-sleep capability to save power. The sensor used is [Adafruit VL53L0X](https://www.adafruit.com/product/3316) Time-of-flight distance sensor breakout board. The board is programmed using C++/Arduino to execute the required functions.
 
@@ -84,7 +84,7 @@ Details to the node hardware housing and its replication can be found in the [Ho
     ```
     Press `Ctrl + A` then `D` to detach the screen session while keep it running in the background. To reattach the session, run `screen -r mqtt_subscriber`.
 
-- A stand-alone application is developed in Python to calculate the current shortest route for clearing full bins. The source code can be found [here](code/bin_routing/moers_bins.ipynb). 
+- A stand-alone application is developed in Python to calculate the shortest path between full bins. Instructions about the installations of required packages can be found [here](shortest_path_setup.md). The source code of the application can be found [here](code/bin_routing/moers_bins.ipynb). 
 
 ### 4. Results and discussion
 The measurement device prototype is fully enclosed with a 3D printed casing which allows all hardware and power modules to be safely embedded inside. It can also be easily mounted on the metal waste bin due to magnet mechanism.
@@ -95,7 +95,7 @@ The measurement device is able to wake up from deep-sleep to measure the fill le
 
 <img src="media/ttn_data.png" style="width: 60%">
 
-However, the only reliable authentication method for LoRaWAN protocol sofar given the current embedded software and available LoRaWAN Gateway is Activation by Personalization (ABP), which is less secure than Over-the-air Activation (OTAA). Additionally, current consumption in deep-sleep mode is 2mA which is far from ideal and thus the actual level of battery saving can be deemed as little.
+However, the only reliable authentication method for LoRaWAN protocol so far given the current embedded software and available LoRaWAN Gateway is Activation by Personalization (ABP), which is less secure than Over-the-air Activation (OTAA). Additionally, current consumption in deep-sleep mode is 2mA which is far from ideal and thus the actual level of battery saving can be deemed as little.
 
 On the server side, the database server(s) are properly set up and the MQTT Subscriber is able to reliably retrieve and store in database(s) all packets sent by TTN MQTT Broker, even from different devices:
 
@@ -113,14 +113,16 @@ Additionally, the web interface allows the system manager to make changes to all
 
 ![web-sensors](media/web-sensors.png)
 
-Last but not least, the stand-alone Route Calculation application is able retrieve the locations of bins that reach a certain fill level and reliably generate the shortest travel path between these bins to save time and resources in clearing them. The following picture highlights in red the calculated route for bins that are more than 60% filled:
+Finally, the stand-alone application for route calculation is able to query the locations of bins that reach a certain level and reliably generate the shortest route between them. This saves time and resources when clearing the bins. The following image highlights the calculated route for containers that are more than 60% full in red:
 
 <img src="media/shortest-route.png" style="height: 40%">
 
-The application also generates at the same time vector files of the calculated route which can easily be imported into third party software like QGIS for further analysis.
+The application also generates at the same time shape-files of the calculated route which can easily be imported into third party software like QGIS for further analysis:
+
+<img src="media/shortest_route_QGIS.png" style="height: 40%">
 
 ### 5. Conclusion and outlook
 
-In conclusion, this project has sucessfully developed a prototype measurement device with improvements from previous year's project including complete portability, battery power supply, enclosure and mounting options. Future improvement would be to consider solar energy as a source of power to extend battery life. 
+In conclusion, this project has successfully developed a prototype measurement device with improvements from previous year's project including complete portability, battery power supply, enclosure and mounting options. Future improvement would be to consider solar energy as a source of power to extend battery life. 
 
 On the software side, this project has taken the bin monitoring task to the next level using interactive web interface and shortest path calculation algorithms to further reduce time and resources required to empty filled bins. An improvement would be to configure notifications when certain amount of bins are full in an area flexibly depending on upcoming events, and automatically execute the shortest-route application at a pre-defined time slot each day. 
