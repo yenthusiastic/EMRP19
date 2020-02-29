@@ -54,7 +54,7 @@ To fulfill these requirements, the microcontroller used in the final prototype i
 
 Details on how to set up the microcontroller, the sensor ready for uploading encoded packets to TTN can be found in the [Node Setup Guide](/documentation/node_setup.md).
 
-Details to the node hardware housing and its replication can be found in the [Housing documentation](https://github.com/yenthusiastic/EMRP19).
+Details to the node hardware housing and its replication can be found in the [Housing documentation](/code/housing/README.md).
 
 #### 3.2. Supporting applications
 
